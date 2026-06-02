@@ -1,0 +1,25 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Sun May 10 18:55:07 2026
+
+@author: hokie
+"""
+# 'Routes' assigns a route_id to its long and short names
+# routes = pd.read_csv("routes.txt",usecols=[0,2,3])
+
+# 'Calendar' associates a SERVICE_ID with one or more {Days of the week} 
+# on which the service is valid.
+# cal = pd.read_csv("calendar.txt",dtype={'route_id' : 'str','monday':'bool',
+# 'tuesday':'bool','wednesday':'bool','thursday':'bool','friday':'bool',
+# 'saturday':'bool','sunday':'bool'},
+# date_format={'start_date':'%Y%M%D','end_date':'%Y%M%D'})
+
+# 'Trips' alignes ROUTES with SERVICE_ID (day(s) of week) and DIRECTION
+# Columns selected are route_id,service_id,trip_id,trip_headsign,direction
+# trips = pd.read_csv("trips.txt",usecols=[0,1,2,3,4])
+
+# 'Stop_Times' aligns each TRIP_ID with a sequenced set 
+# pd.read_csv("stop_times.txt",usecols=['trip_id','stop_id','arrival_time',
+# 'stop_sequence','timepoint'])
+
+# stops = pd.read_csv("stops.txt",usecols=['stop_id','stop_name'])
