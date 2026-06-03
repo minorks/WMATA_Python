@@ -23,14 +23,30 @@ def retrieveBuffer():
     return feed
 
 def makeDataframe(feed, routes= None):
+       # "AsOf" : pd.Series('datatime64[ns]'),
+       # "Trip_ID" : pd.Series(dtype='int'),
+       # "Route" : pd.Series(dtype='str'),
+       # #"StartTime" : pd.Series(dtype='datetime64[s]'),
+       # "Stop_ID" : pd.Series(dtype='int'),
+       # "ArrTime" : pd.Series(dtype='datetime64[s]')
+    
+    col_dtypes = {
+        "AsOf" : 'datetime64[s]',
+        "Trip_ID" : 'int',
+        "Route" : 'str',
+        "Stop_ID" : 'int',
+        "ArrTime" : 'datetime64[s]',
+        "DepTime" : 'datetime64[s]'
+        }
+    
     df = pd.DataFrame({
-        "AsOf" : pd.Series('datatime64[ns]'),
-        "Trip_ID" : pd.Series(dtype='int'),
-        "Route" : pd.Series(dtype='str'),
-        #"StartTime" : pd.Series(dtype='datetime64[s]'),
-        "Stop_ID" : pd.Series(dtype='int'),
-        "ArrTime" : pd.Series(dtype='datetime64[s]')
+        col: pd.Series(dtype=dtype)
+        for col,dtype in col_dtypes.items()
         })
+    
+    # Return a blank dataframe
+    if feed == None:
+        return(df)
     
     asof = pd.to_datetime(feed.header.timestamp,utc=True,unit="s").\
         tz_convert("America/New_York")
@@ -48,12 +64,26 @@ def makeDataframe(feed, routes= None):
         # sTime = pd.to_datetime(trip["trip"].start_time,utc=True,unit="s").tz_convert("America/New_York")
         sid = trip["stu"][0].stop_id
         
-        val = trip["stu"][0].departure.time if trip["stu"][0].HasField("departure")\
-            else trip["stu"][0].arrival.time
-        time = pd.to_datetime(val,utc=True,unit="s").\
-            tz_convert("America/New_York")
+        if (trip["stu"][0].HasField("arrival")):
+            aTime = trip["stu"][0].arrival.time
+            aTime = pd.to_datetime(aTime,utc=True,unit="s").\
+                tz_convert("America/New_York")
+        else:
+            aTime = None
+        
+        if (trip["stu"][0].HasField("departure")):
+            dTime = trip["stu"][0].departure.time
+            dTime = pd.to_datetime(aTime,utc=True,unit="s").\
+                tz_convert("America/New_York")
+        else:
+            dTime = None
+        
+        # val = trip["stu"][0].departure.time if trip["stu"][0].HasField("departure")\
+        #    else trip["stu"][0].arrival.time
+        # time = pd.to_datetime(val,utc=True,unit="s").\
+        #    tz_convert("America/New_York")
         #df.loc[len(df)] = [asof,tid,rt,sTime,sid,time]
-        df.loc[len(df)] = [asof,tid,rt,sid,time]
+        df.loc[len(df)] = [asof,tid,rt,sid,aTime,dTime]
 
     return df
 
@@ -65,5 +95,7 @@ def my_datetime(date):
         return pd.to_datetime(date,utc=True,unit="s")
  
 # Debugging   
-data = retrieveBuffer()
-tbl = makeDataframe(data)
+# data = retrieveBuffer()
+# tbl = makeDataframe(data,routes=["F20"])
+
+# ,routes=["F28"]
