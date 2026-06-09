@@ -8,6 +8,7 @@ Created on Mon Apr  6 21:36:59 2026
 import pandas as pd
 from time import sleep
 import controller
+import sys
 
 # =============================================================================
 # def getData(file):
@@ -46,7 +47,17 @@ def runner(fLoc,secs=14400):
             ['ArrTime'].max().sort_values(by=['Trip_ID','ArrTime'])
         tbl.to_csv(fLoc+rt+"_data.csv",mode='a',index=False,header=False)
         
-runner(fLoc="/home/minorks/Python/WMATA_Py/Data/",secs=10)
+# runner(fLoc="/home/minorks/Python/WMATA_Py/Data/",secs=10)
 
-    
+if __name__ == "__main__":
+    if (len(sys.argv) == 2):
+        fLoc = str(sys.argv[1])
+        runner(fLoc)
+    elif (len(sys.argv) == 3):
+        fLoc = str(sys.argv[1])
+        secs = int(sys.argv[2])
+        runner(fLoc,secs)
+    else:
+        print("Error: Must Declare a File Location!")
+        
 
