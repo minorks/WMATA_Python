@@ -25,12 +25,12 @@ import sys
 #     return(dat.reset_index())
 # =============================================================================
 
-def runner(fLoc,secs=14400):
+def runner(fLoc,secs=14400,routes=["F28","F29"]):
     x = 0
     
     # Blank Dictionary
     dats = {}
-    for rt in controller.myRoutes:
+    for rt in routes:
         dats[rt] = controller.makeDataframe(feed=None)
     
     # Check every 10 seconds for 4 hours (4hrs*60mins*60secs = 14400)
@@ -61,6 +61,13 @@ if __name__ == "__main__":
         fLoc = str(sys.argv[1])
         secs = int(sys.argv[2])
         runner(fLoc,secs)
+    elif (len(sys.argv) > 3):
+        fLoc = str(sys.argv[1])
+        secs = int(sys.argv[2])
+        routes = []
+        for i in range(3,len(sys.argv)):
+          routes.append(str(sys.argv[i]))
+        runner(fLoc,secs,routes)
     else:
         print("Error: Must Declare a File Location!")
         
