@@ -6,7 +6,7 @@ Created on Mon Apr  6 21:36:59 2026
 """
 
 import pandas as pd
-from time import sleep
+from time import sleep,ctime
 import controller
 import sys
 
@@ -46,10 +46,14 @@ def runner(fLoc,secs=14400):
         tbl = tbl.groupby(by=['Trip_ID','Route','Stop_ID'],as_index=False)\
             ['ArrTime'].max().sort_values(by=['Trip_ID','ArrTime'])
         tbl.to_csv(fLoc+rt+"_data.csv",mode='a',index=False,header=False)
+        print("Wrote to "+floc+rt+"_data.csv")
+
+    print(ctime() + ": Ended WMATA Data Collection"
         
 # runner(fLoc="/home/minorks/Python/WMATA_Py/Data/",secs=10)
 
 if __name__ == "__main__":
+    print(ctime() + ": Starting WMATA Data Collection"
     if (len(sys.argv) == 2):
         fLoc = str(sys.argv[1])
         runner(fLoc)
