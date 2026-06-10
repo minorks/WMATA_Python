@@ -37,7 +37,9 @@ def runner(fLoc,secs=14400,routes=["F28","F29"]):
     while x < secs:
         data = controller.retrieveBuffer()
         for rt,tbl in dats.items():
-            tbl = pd.concat([tbl,controller.makeDataframe(feed=data,routes=[rt])])
+            tbl = pd.concat([tbl,controller.makeDataframe(
+                feed=data,routes=[rt])])
+            dats[rt] = tbl
         x += 10
         if x < secs:
             sleep(10)
@@ -46,29 +48,27 @@ def runner(fLoc,secs=14400,routes=["F28","F29"]):
         tbl = tbl.groupby(by=['Trip_ID','Route','Stop_ID'],as_index=False)\
             ['ArrTime'].max().sort_values(by=['Trip_ID','ArrTime'])
         tbl.to_csv(fLoc+rt+"_data.csv",mode='a',index=False,header=False)
-        print("Wrote to "+floc+rt+"_data.csv")
+        print("Wrote to "+fLoc+rt+"_data.csv")
 
-    print(ctime() + ": Ended WMATA Data Collection"
+    print(ctime() + ": Ended WMATA Data Collection")
+    
+### runner("//minorhomeserver/minorks/Python/WMATA_Py/Data/",secs=10,routes=["F20"])
         
-# runner(fLoc="/home/minorks/Python/WMATA_Py/Data/",secs=10)
-
 if __name__ == "__main__":
-    print(ctime() + ": Starting WMATA Data Collection"
-    if (len(sys.argv) == 2):
-        fLoc = str(sys.argv[1])
-        runner(fLoc)
-    elif (len(sys.argv) == 3):
-        fLoc = str(sys.argv[1])
-        secs = int(sys.argv[2])
-        runner(fLoc,secs)
-    elif (len(sys.argv) > 3):
-        fLoc = str(sys.argv[1])
-        secs = int(sys.argv[2])
-        routes = []
-        for i in range(3,len(sys.argv)):
-          routes.append(str(sys.argv[i]))
-        runner(fLoc,secs,routes)
-    else:
-        print("Error: Must Declare a File Location!")
-        
-
+     print(ctime() + ": Starting WMATA Data Collection")
+     if (len(sys.argv) == 2):
+         fLoc = str(sys.argv[1])
+         runner(fLoc)
+     elif (len(sys.argv) == 3):
+         fLoc = str(sys.argv[1])
+         secs = int(sys.argv[2])
+         runner(fLoc,secs)
+     elif (len(sys.argv) > 3):
+         fLoc = str(sys.argv[1])
+         secs = int(sys.argv[2])
+         routes = []
+         for i in range(3,len(sys.argv)):
+           routes.append(str(sys.argv[i]))
+         runner(fLoc,secs,routes)
+     else:
+         print("Error: Must Declare a File Location!")
